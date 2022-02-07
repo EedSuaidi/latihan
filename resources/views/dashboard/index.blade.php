@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Blank Page</title>
+  <title>Dashboard</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -28,12 +28,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Blank Page</h1>
+            <h1>Dashboard</h1>
           </div>
+          
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Blank Page</li>
+              <li class="breadcrumb-item active">Dashboard</li>
             </ol>
           </div>
         </div>
@@ -44,27 +45,67 @@
     <section class="content">
 
       {{-- Table --}}
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Pengaduan</th>
-            <th scope="col">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($pengaduans as $pengaduan)
-          <tr>
-            <td>{{ $loop->iteration }}</td>
-            <td>{{ $pengaduan->isi }}</td>
-            <td>
-              <a class="btn btn-success">Tanggapi</span></a>
-              <a class="btn btn-danger">Hapus</span></a>
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      @if(session()->has('success'))
+            <div class="alert alert-success" role="alert">
+              {{ session('success') }}
+            </div>
+      @endif
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Tabel Pengaduan</h3>
+
+              <div class="card-tools">
+                <div class="input-group input-group-sm" style="width: 150px;">
+                  <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-default">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+              <table class="table table-hover text-nowrap">
+                <thead>
+                  <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">Pengaduan</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($pengaduans as $pengaduan)
+                  <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $pengaduan->isi }}</td>
+                    <td>
+                      <h4><span class="badge bg-danger">{{ $pengaduan->status }}</span></h4>
+                    </td>
+                    <td>
+                      <a href="/dashboard/{{ $pengaduan->id }}/edit" class="btn btn-success">Tanggapi</span></a>
+                      <form action="/dashboard/{{ $pengaduan->id }}" method="post" class="d-inline">
+                      @method('delete')
+                      @csrf
+                      <button class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus data?')" type="submit">Hapus</button>
+                      </form>
+                    </td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+      </div>
+      {{-- End Table --}}
 
     </section>
     <!-- /.content -->
