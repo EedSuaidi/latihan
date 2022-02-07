@@ -36,7 +36,17 @@ class PengaduanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'nama_lengkap' => 'required|max:255',
+            'judul_pengaduan' => 'required|max:255',
+            'kategori' => 'required',
+            'isi' => 'required',
+            'status' => 'required'
+        ]);
+
+        Pengaduan::create($validatedData);
+
+        return redirect('/status')->with('success', 'Pengaduan telah dikirim!');
     }
 
     /**
@@ -56,9 +66,11 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Pengaduan $pengaduan, $id)
     {
-        //
+        return view('dashboard.edit', [
+            'pengaduan' => $pengaduan
+        ]);
     }
 
     /**
@@ -79,8 +91,10 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Pengaduan $pengaduan, $id)
     {
-        //
+        $pengaduan = Pengaduan::findOrFail($id);
+        $pengaduan->delete();
+        return redirect('/dashboard')->with('success', 'Pengaduan telah dihapus!');
     }
 }
